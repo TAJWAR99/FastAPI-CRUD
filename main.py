@@ -41,8 +41,8 @@ async def get_task(id: int):
         )
 
 class taskModel(BaseModel):
-    title: str
-    done: bool = False
+    title: str | None = None
+    done: bool | None = None
 
 @app.post("/tasks", status_code=status.HTTP_201_CREATED)
 async def create_task(task: taskModel):
@@ -59,10 +59,10 @@ async def create_task(task: taskModel):
 async def update_task(id: int, task: taskModel):
     for item in tasks:
         if item["id"] == id:
-            if task.title == "":
+            if task.title == "" and task.done == "":
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST, 
-                    detail="Invalid body"
+                    detail="Request body cannot be empty"
                 )
             if item["title"] != "":
                 item["title"] = task.title
